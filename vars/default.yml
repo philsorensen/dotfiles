@@ -1,0 +1,7 @@
+---
+# use shorter variable names for user and home
+user: "{{ ansible_user_id }}"
+home: "{{ ansible_user_dir }}"
+
+# directory paths
+dot_local: "{{ home }}/.local"

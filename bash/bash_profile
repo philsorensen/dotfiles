@@ -1,0 +1,60 @@
+# .bash_profile - startup file for bash login shells.  -*- mode: sh -*-
+#
+# This file should set only "global" enviroment variables and commands
+# for non-GUI interactive login shells (terminal and SSH).  Other
+# interactive setup should be done in the .bashrc file.  Files in the
+# configuration directory with the pattern *-login.sh are sourced.
+# In interactive shells the ~/.bashrc is also sourced.  
+#
+config_dir=${HOME}/.config/bash
+
+source ${config_dir}/environment
+source ${config_dir}/functions
+
+
+# remove ~/bin and ~/.local/bin from PATH 
+alter_path remove ${HOME}/bin
+alter_path remove ${HOME}/.local/bin
+
+# add $LOCALDIR/bin to PATH on supported distos
+if [ -n "${DISTRO}" ]; then
+    alter_path add ${HOME}/${DOTLOCAL}/bin
+fi
+export PATH
+
+# source additional login configurations
+if [ -n "${DISTRO}" ]; then
+    for file in ${config_dir}/*-login.sh; do
+        [ -r "${file}" ] && . $file
+    done
+fi
+
+# clean up functions 
+functions_clean
+
+# Return if not interactive
+[[ $- != *i* ]] && return
+
+
+# setup for interactive login shell (SSH and terminal)
+if [ -n ${DISTRO} ]; then
+    # Use tmux with SSH (check for tmux/screen and TRAMP)
+    if [ -n "$SSH_TTY" -a "${TERM:0:6}" != "screen" -a "${TERM}" != "dumb" ]
+    then
+        if [ -n "$(command -v tmux)" ]; then  # add version check?
+            hostent=$(/usr/bin/getent hosts ${SSH_CONNECTION%% *})
+            if [ -n "${hostent}" ]; then
+                host=$(echo ${hostent##* } | cut -d'.' -f1)
+            else
+                host="${USER}"
+            fi
+            tmux has -t ${host} && tmux attach -t ${host} || tmux new -s $host
+            exit
+        fi
+    fi
+fi
+
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+	. ~/.bashrc
+fi

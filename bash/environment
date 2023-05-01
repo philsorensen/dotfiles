@@ -1,0 +1,30 @@
+# environment - set various environment variables  -*- mode: sh -*-
+
+# set the distro if "supported" otherwise empty 
+export DISTRO=$(
+    source /etc/os-release
+
+    case $( [[ ${ID_LIKE} == *rhel* ]] && echo "el" || echo "${ID}" ) in
+#        "arch" | "debian" )
+#            echo "${ID}"
+#            ;;
+        "el" )
+            major="${VERSION:0:1}"
+            [ "$major" == "7" -o "${major}" == "9" ] && echo "el${major}"
+            ;;
+    esac
+)
+
+# set to YES if home directory is on an NFS share.
+export SHARED_HOME=$(
+    [ "$(stat --format=%T -f $HOME)" == "nfs" ] && echo "YES" || echo ""
+)
+
+# set ".local" directory
+export DOTLOCAL=$(
+    [ -z "${DISTRO}" ] && echo ""
+    [ -z "${SHARED_HOME}" ] && echo ".local" || echo ".local/${DISTRO}"
+)
+
+# other environment settings
+export KRB5CCNAME="KEYRING:persistent:$(id -u)"

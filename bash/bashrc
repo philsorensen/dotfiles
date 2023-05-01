@@ -1,0 +1,33 @@
+# .bashrc - startup file for interactive shells  -*- mode: sh -*-
+#
+# This file contains user specific aliases and functions used for
+# interactive shells.  It is called by .bash_profile for login
+# shells. It sources *-rc.sh files from the configuarion directory.
+#
+config_dir=${HOME}/.config/bash
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+# return if not in interactive shell
+[[ $- != *i* ]] && return
+
+
+# "global" setup
+
+# aliases
+alias ls='LC_COLLATE=C ls --color=auto'
+
+
+# setup only used on "supported" distros
+if [ -n "${DISTRO}" ]; then
+    # set prompt
+    eval "$(starship init bash)"
+    
+    # source additional interactive configurations
+    for file in ${config_dir}/*-rc.sh; do
+        [ -r "${file}" ] && . $file
+    done
+fi

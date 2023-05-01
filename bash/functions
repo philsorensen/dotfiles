@@ -1,0 +1,48 @@
+# functions - functions for bash initialization scripts  -*- mode: sh -*-
+
+# alter PATH variables (pathmunge with remove)  
+alter_path () {
+    case ":${PATH}:" in
+        *:"$2":*)
+            if [ "$1" = "remove" ]; then
+                PATH=${PATH/:$2/}  # not first
+                PATH=${PATH/$2:/}  # first
+            fi
+            ;;
+        *)
+            if [ "$1" = "add" ]; then
+                if [ "$3" = "after" ] ; then
+                    PATH=$PATH:$2
+                else
+                    PATH=$2:$PATH
+                fi
+            fi
+    esac
+}
+
+# check that directory exists
+check_dir () {
+    [ ! -d "$1" ] && mkdir -p $1
+}
+
+# check that link points to target
+check_link () {
+    local target="$1"
+    local link="$2"
+
+    if [ ! -L "${link}" -o "$(realpath -q ${link})" != "${target}" ]; then
+        [ -L "${link}" -a ! -e "${link}" ] && rm ${link}  # broken link
+        [ -e "${link}" ] && mv ${link} ${link}.old        # wrong target
+        ln -s ${target} ${link}
+    fi
+}
+
+
+# remove setup functions from shell
+functions_clean () {
+    unset -f alter_path
+    unset -f check_dir
+    unset -f check_link
+
+    unset -f clean_up
+}

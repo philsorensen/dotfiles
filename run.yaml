@@ -1,0 +1,25 @@
+---
+# Run Tasks in {{module}}
+- hosts: local
+  connection: local
+
+  tasks:
+    - name: Include default variables
+      ansible.builtin.include_vars:
+        file: default.yml
+
+    - name: Include CLASSE specfic variables
+      ansible.builtin.include_vars:
+        file: classe.yml
+      tags:
+        - classe
+
+    - name: Include shared home directory specfic variables
+      ansible.builtin.include_vars:
+        file: shared-home.yml
+      tags:
+        - shared-home
+
+    - name: include module tasks.yaml file
+      ansible.builtin.include_tasks:
+        file: "{{ module }}/tasks.yaml"

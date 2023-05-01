@@ -1,0 +1,3 @@
+---
+# directory paths
+pkgsrc_dir: "{{ home }}/Pkgsrc/pkgs"

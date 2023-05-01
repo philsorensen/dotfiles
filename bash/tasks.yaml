@@ -1,0 +1,44 @@
+---
+- name: Create needed directories
+  ansible.builtin.file:
+    dest: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ home }}/.config/bash"
+    - "{{ dot_local }}/bin"
+
+- name: Create needed 'shared-home' directories
+  ansible.builtin.file:
+    dest: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ chess_dir }}/Python/{{ distro }}/pipx"
+    - "{{ chess_dir }}/Python/{{ distro }}/venvs"
+  tags: shared-home
+
+  
+- name: Copy bash startup files
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ home }}/.{{ item }}"
+  loop:
+    - bash_profile
+    - bashrc
+
+- name: Copy aditional bash setup files
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ home }}/.config/bash/{{ item }}"
+  loop:
+    - environment
+    - functions
+    - 90-ssh_agent-login.sh
+
+- name: Copy CLASSE bash setup files
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ home }}/.config/bash/{{ item }}"
+  loop:
+    - 00-classe-login.sh
+    - 00-classe-rc.sh
+  tags: classe

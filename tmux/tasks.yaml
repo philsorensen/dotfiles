@@ -1,0 +1,15 @@
+---
+# check that package / symlink is installed
+
+- name: Check tmux symlink
+  ansible.builtin.file:
+    src: "{{ pkgsrc_dir }}/bin/tmux"
+    dest: "{{ dot_local }}/bin/tmux"
+    state: link
+  when: ansible_facts['os_family'] == "RedHat"
+
+
+- name: Copy tmux config file
+  ansible.builtin.copy:
+    src: tmux.conf
+    dest: "{{ home }}/.tmux.conf"

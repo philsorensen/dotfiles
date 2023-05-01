@@ -1,0 +1,29 @@
+---
+- hosts: local
+  connection: local
+
+  pre_tasks:
+    - name: Include default variables
+      ansible.builtin.include_vars:
+        file: default.yml
+
+    - name: Include CLASSE specfic variables
+      ansible.builtin.include_vars:
+        file: classe.yml
+      tags:
+        - classe
+
+    - name: Include shared home directory specfic variables
+      ansible.builtin.include_vars:
+        file: shared-home.yml
+      tags:
+        - classe
+
+  tasks:
+    - name: include modules tasks.yaml files
+      ansible.builtin.include_tasks:
+        file: "{{ item }}/tasks.yaml"
+      loop:
+        - starship
+        - tmux
+
