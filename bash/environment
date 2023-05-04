@@ -26,5 +26,14 @@ export DOTLOCAL=$(
     [ -z "${SHARED_HOME}" ] && echo ".local" || echo ".local/${DISTRO}"
 )
 
-# other environment settings
+# use keyring for kerberos cache
 export KRB5CCNAME="KEYRING:persistent:$(id -u)"
+
+# set XDG_*_HOME variables
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_DATA_HOME="${HOME}/${DOTLOCAL}/shared"
+export XDG_STATE_HOME="${HOME}/${DOTLOCAL}/state"
+
+# set prefered applications
+export TERMINAL="alacritty"
+export EDITOR="vim"

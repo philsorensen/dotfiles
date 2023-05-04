@@ -7,6 +7,14 @@
     - "{{ home }}/.config/bash"
     - "{{ dot_local }}/bin"
 
+- name: Create needed 'CLASSE' directories
+  ansible.builtin.file:
+    dest: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ home }}/Programs"
+  tags: classe
+
 - name: Create needed 'shared-home' directories
   ansible.builtin.file:
     dest: "{{ item }}"
