@@ -17,13 +17,24 @@
       ansible.builtin.include_vars:
         file: shared-home.yml
       tags:
-        - classe
+        - shared-home
 
   tasks:
-    - name: include modules tasks.yaml files
+    - name: include default module tasks.yaml files
       ansible.builtin.include_tasks:
-        file: "{{ item }}/tasks.yaml"
+        file: "{{ module }}/tasks.yaml"
       loop:
         - starship
         - tmux
+      loop_control:
+        loop_var: module
 
+    - name: include shared home directroy module tasks.yaml files
+      ansible.builtin.include_tasks:
+        file: "{{ module }}/tasks.yaml"
+      loop:
+        - i3
+      loop_control:
+        loop_var: module
+      tags:
+        - shared-home
