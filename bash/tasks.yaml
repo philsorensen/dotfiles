@@ -6,6 +6,7 @@
   loop:
     - "{{ home }}/.config/bash"
     - "{{ dot_local }}/bin"
+    - "{{ dot_local }}/share/fonts"
 
 - name: Create needed 'CLASSE' directories
   ansible.builtin.file:

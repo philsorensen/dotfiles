@@ -31,7 +31,7 @@ export KRB5CCNAME="KEYRING:persistent:$(id -u)"
 
 # set XDG_*_HOME variables
 export XDG_CONFIG_HOME="${HOME}/.config"
-export XDG_DATA_HOME="${HOME}/${DOTLOCAL}/shared"
+export XDG_DATA_HOME="${HOME}/${DOTLOCAL}/share"
 export XDG_STATE_HOME="${HOME}/${DOTLOCAL}/state"
 
 # set prefered applications
