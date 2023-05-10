@@ -248,7 +248,8 @@ exec --no-startup-id feh --bg-fill $HOME/.config/i3/wallpaper/wallpaper.$DISTRO
 exec --no-startup-id \
     picom --corner-radius 5 \
           --inactive-opacity 0.8 --active-opacity 1.0 \
-          --shadow --shadow-exclude 'class_g = "i3bar"'
+          --shadow --shadow-exclude 'class_g = "i3bar"' \
+          --opacity-rule '100:name *= "i3lock"'
 
 # Setup overrides for some windows
 
