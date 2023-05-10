@@ -1,0 +1,10 @@
+#!/bin/bash
+#  Wrapper to select proper emacs from /nfs/opt/
+
+base_dir=$(readlink ${HOME}/Programs/emacs.${DISTRO})
+
+if [ -n "${base_dir}" -a -x "${base_dir}/bin/$(basename $0)" ]; then
+    exec ${base_dir}/bin/$(basename $0) $*
+else
+    exec /usr/bin/$(basename $0) $*
+fi

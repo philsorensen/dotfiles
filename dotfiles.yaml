@@ -24,6 +24,7 @@
       ansible.builtin.include_tasks:
         file: "{{ module }}/tasks.yaml"
       loop:
+        - emacs
         - starship
         - tmux
       loop_control:

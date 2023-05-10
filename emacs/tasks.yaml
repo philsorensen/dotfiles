@@ -1,0 +1,67 @@
+---
+- name: Check emacs directory symlink
+  ansible.builtin.stat:
+    path: "{{ home }}/Programs/emacs.{{ distro }}"
+  register: emacs_link
+  failed_when: (emacs_link.stat.islnk is not defined or not emacs_link.stat.islnk)
+  tags:
+    - shared-home
+
+- name: Copy emacs wrapper script
+  ansible.builtin.copy:
+    dest: "{{ dot_local }}/bin/emacs"
+    src: emacs-wrapper
+    mode: "0755"
+  tags:
+    - shared-home
+
+- name: Create links to wrapper
+  ansible.builtin.file:
+    path: "{{ dot_local }}/bin/{{ item }}"
+    src: "{{ dot_local }}/bin/emacs"
+    state: link
+  loop:
+    - ctags
+    - ebrowse
+    - emacsclient
+    - etags
+  tags:
+    - shared-home
+
+
+- name: Create directories for JetBrains Mono fonts
+  ansible.builtin.file:
+    path: "{{ home }}/Programs/JetBrainsMono"
+    state: directory
+  tags:
+    - classe
+
+- name: Download JetBrains Mono font
+  ansible.builtin.unarchive:
+    src: "{{
+      (
+      lookup(
+        'url',
+        'https://api.github.com/repos/JetBrains/JetBrainsMono/releases/latest',
+        split_lines = false) | from_json
+      ).get('assets')[0].get('browser_download_url')
+    }}"
+    dest: "{{ home }}/Programs/JetBrainsMono"
+    remote_src: true
+  tags:
+    - classe
+
+- name: Link to user fonts directory
+  ansible.builtin.file:
+    path: "{{ dot_local }}/share/fonts/JetBrainsMono"
+    src: "{{ home }}/Programs/JetBrainsMono/fonts/ttf"
+    state: link
+  tags:
+    - classe
+
+
+- name: Emacs configuration git repository
+  ansible.builtin.git:
+    repo: git@github.com:philsorensen/dotemacs.git
+    dest: "{{ home }}/.emacs.d"
+
