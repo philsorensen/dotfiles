@@ -1,0 +1,10 @@
+[python]
+use_venv = true
+
+[venv]
+{% if lookup("ansible.builtin.env", "SHARED_HOME") == "YES" %}
+location = "{{ chess_dir }}/Python/venvs/"
+{% endif %}
+backend = "venv"
+in_project = false
+with_pip = true

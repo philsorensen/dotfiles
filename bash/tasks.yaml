@@ -16,14 +16,13 @@
     - "{{ home }}/Programs"
   tags: classe
 
-- name: Create needed 'shared-home' directories
-  ansible.builtin.file:
-    dest: "{{ item }}"
-    state: directory
-  loop:
-    - "{{ chess_dir }}/Python/{{ distro }}/pipx"
-    - "{{ chess_dir }}/Python/{{ distro }}/venvs"
-  tags: shared-home
+#- name: Create needed 'shared-home' directories
+#  ansible.builtin.file:
+#    dest: "{{ item }}"
+#    state: directory
+#  loop:
+#    -
+#  tags: shared-home
 
   
 - name: Copy bash startup files

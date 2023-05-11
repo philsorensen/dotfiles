@@ -19,12 +19,4 @@ if [ "${SHARED_HOME}" == "YES" ]; then
 
     check_dir /tmp/${USER}/openjfx
     check_link /tmp/${USER}/openjfx $HOME/.openjfx
-
-    # setup python / pipx / virtualenv
-    export PYTHONUSERBASE="${HOME}/${DOTLOCAL}"
-    
-    export PIPX_HOME="${CHESS_DIR}/Python/${DISTRO}/pipx"
-    export PIPX_BIN_DIR="${HOME}/${DOTLOCAL}/bin"
-
-    export WORKON_HOME="${CHESS_DIR}/Python/${DISTRO}/venvs"
 fi

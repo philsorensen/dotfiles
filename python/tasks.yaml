@@ -1,0 +1,68 @@
+---
+- name: Create needed 'shared-home' directories
+  ansible.builtin.file:
+    dest: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ chess_dir }}/Python/pipx/{{ distro }}"
+    - "{{ chess_dir }}/Python/venvs"
+  tags: shared-home
+
+
+- name: Install pipx
+  ansible.builtin.pip:
+    executable: /usr/bin/pip3
+    name: pipx
+
+- name: Mask pip and pip3
+  ansible.builtin.copy:
+    dest: "{{ dot_local }}/bin/{{ item }}"
+    src: mask_pip
+    mode: "0755"
+  loop:
+    - pip
+    - pip3
+
+- name: Set pipx python value
+  ansible.builtin.set_fact:
+    pipx_python: "{{
+      (distro | default('') == 'el7')
+        | ternary('/opt/rh/rh-python38/root/bin/python3','/usr/bin/python3')
+    }}"
+
+- name: Install general python packages
+  community.general.pipx:
+    executable: "{{ dot_local }}/bin/pipx"
+    name: "{{ item }}"
+    state: install
+    python: "{{ pipx_python }}"
+  loop:
+    - ansible-core
+    - pdm
+
+- name: Inject pdm plugins
+  community.general.pipx:
+    executable: "{{ dot_local }}/bin/pipx"
+    name: pdm
+    inject_packages: "{{ item }}"
+    state: inject
+    python: "{{ pipx_python }}"
+  loop:
+    - pdm-autoexport
+
+- name: Upgrade pipx packages
+  community.general.pipx:
+    executable: "{{ dot_local }}/bin/pipx"
+    include_injected: true
+    state: upgrade_all
+    python: "{{ pipx_python }}"
+
+- name: Create ~/.config/pdm
+  ansible.builtin.file:
+    path: "{{ home }}/.config/pdm"
+    state: directory
+
+- name: Install pdm config file
+  ansible.builtin.template:
+    dest: "{{ home }}/.config/pdm/config.toml"
+    src: config.toml.j2
