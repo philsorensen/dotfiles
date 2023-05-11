@@ -1,0 +1,8 @@
+# Setup pkgsrc environment  -*- mode: sh -*-
+#
+{% if distro == "el7" %}source scl_source enable devtoolset-10{% endif %}
+
+export PKGSRC={{ pkgsrc_dir }}
+
+export PATH=$PKGSRC/sbin:$PATH
+export PATH=$PKGSRC/bin:$PATH

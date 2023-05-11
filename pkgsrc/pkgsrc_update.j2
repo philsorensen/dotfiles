@@ -1,0 +1,9 @@
+#!/bin/bash
+#
+# Update pkgsrc packages
+#
+source {{ pkgsrc_dir}}/setup
+
+cd $PKGSRC/../pkgsrc
+git pull
+pkg_rolling-replace -u $@

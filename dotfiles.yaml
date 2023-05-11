@@ -30,6 +30,16 @@
       loop_control:
         loop_var: module
 
+    - name: include classe module tasks.yaml files
+      ansible.builtin.include_tasks:
+        file: "{{ module }}/tasks.yaml"
+      loop:
+        - pkgsrc
+      loop_control:
+        loop_var: module
+      tags:
+        - classe
+
     - name: include shared home directroy module tasks.yaml files
       ansible.builtin.include_tasks:
         file: "{{ module }}/tasks.yaml"
