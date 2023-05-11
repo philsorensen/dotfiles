@@ -3,3 +3,7 @@
 
 # backup files
 *~
+
+# ansible collections/roles
+collections/
+roles/

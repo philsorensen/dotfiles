@@ -22,9 +22,12 @@ if ! command -v ansible-playbook >/dev/null; then
 
 if [ -z "$1" ]; then
     # run full install/update
+    #  - install collections/roles
     #  - run shell.yaml playbook for shell related things
     #  - source new shell environment
     #  - run dotfiles.yaml playbook
+    ansible-galaxy install -r requirements.yaml
+
     if ansible-playbook shell.yaml --tags="${tags}"; then
         source ${HOME}/.bash_profile
         ansible-playbook dotfiles.yaml --tags="${tags}"
