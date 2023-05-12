@@ -25,7 +25,10 @@
         file: "{{ module }}/tasks.yaml"
       loop:
         - emacs
+        - git
+        - nodejs
         - python
+        - ssh
         - starship
         - tmux
       loop_control:

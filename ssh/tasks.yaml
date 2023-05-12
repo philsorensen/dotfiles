@@ -1,0 +1,14 @@
+---
+- name: Ensure .ssh exists and has correct permissions
+  ansible.builtin.file:
+    path: "{{ home }}/.ssh"
+    state: directory
+    mode: "0700"
+
+- name: Install .ssh/config
+  ansible.builtin.copy:
+    dest: "{{ home }}/.ssh/config"
+    src: config
+    mode: "0600"
+
+# TODO: manage keys

@@ -1,0 +1,7 @@
+# npm configuration
+{% if lookup('ansible.builtin.env', 'SHARED_HOME') == "YES" %}
+prefix=${HOME}/${DOTLOCAL}/
+cache=/tmp/npm-cache
+{% else %}
+prefix=${HOME}/.local/
+{% endif %}

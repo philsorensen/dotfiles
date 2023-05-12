@@ -1,3 +1,5 @@
 ---
+email: "pas37@cornell.edu"
+
 # directory paths
 pkgsrc_dir: "{{ home }}/Pkgsrc/pkgs"

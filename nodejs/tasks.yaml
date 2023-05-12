@@ -1,0 +1,13 @@
+---
+- name: Install npm config file
+  ansible.builtin.template:
+    dest: "{{ home }}/.npmrc"
+    src: npmrc.j2
+
+- name: Install global npm packages
+  community.general.npm:
+    global: true
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - npm

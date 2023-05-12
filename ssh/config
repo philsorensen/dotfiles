@@ -1,0 +1,21 @@
+Host github.com gitlab01.*
+    ForwardX11 no
+
+Host *.chess.cornell.edu *.classe.cornell.edu
+    User pas37
+
+Host *
+    ControlMaster auto
+    ControlPath ~/.ssh/master-%l-%r@%h:%p
+    ControlPersist 300
+
+    ServerAliveInterval 30
+    ServerAliveCountMax 3
+
+    ForwardAgent yes
+
+    ForwardX11 yes
+    ForwardX11Trusted yes
+
+    GSSAPIAuthentication yes
+    GSSAPIDelegateCredentials yes

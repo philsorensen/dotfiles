@@ -15,3 +15,4 @@
         dest: "{{ home }}/.config/bash/{{ item | basename }}"
       loop:
         - python/10-python-login.sh
+        - ssh/20-ssh-krb-rc.sh

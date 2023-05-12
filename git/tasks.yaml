@@ -1,0 +1,10 @@
+---
+- name: Install git config file
+  ansible.builtin.template:
+    dest: "{{ home }}/.gitconfig"
+    src: gitconfig.j2
+
+- name: Install user gitignore file
+  ansible.builtin.copy:
+    dest: "{{ home }}/.gitignore"
+    src: gitignore
