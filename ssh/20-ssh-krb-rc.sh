@@ -29,11 +29,14 @@ root_wrapper() {
 }
 
 remote () {
+    TERM=xterm-256color
     set_upn ${KUSER} && ssh_wrapper "$@"
 }
 root () {
+    TERM=xterm
     set_upn admin-${KUSER} && root_wrapper "$@"
 }
 rootdo () {
+    TERM=xterm
     set_upn admindo-${KUSER} && root_wrapper "$@"
 }
