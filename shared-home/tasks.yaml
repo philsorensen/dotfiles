@@ -1,0 +1,51 @@
+---
+- name: Create profiles directories for browsers/mail clients
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0700"
+  loop:
+    - "{{ user_dir }}/Profiles"
+    - "{{ user_dir }}/Profiles/mozilla"
+    - "{{ user_dir }}/Profiles/vivaldi"
+
+
+- name: Create profile link directory for firefox
+  ansible.builtin.file:
+    path: "{{ home }}/.mozilla"
+    src: "{{ user_dir }}/Profiles/mozilla"
+    state: link
+
+- name: Install firefox profile wrapper
+  ansible.builtin.copy:
+    dest: "{{ dot_local }}/bin/firefox"
+    src: firefox-wrapper.sh
+    mode: "0755"
+
+
+- name: Create profile directory link for vivaldi
+  ansible.builtin.file:
+    path: "{{ home }}/.config/vivaldi"
+    src: "{{ user_dir }}/Profiles/vivaldi"
+    state: link
+
+- name: Install vivaldi profile wrapper
+  ansible.builtin.copy:
+    dest: "{{ dot_local }}/bin/vivaldi"
+    src: vivaldi-wrapper.sh
+    mode: "0755"
+
+
+- name: Create home directory profile link for thunderbird
+  ansible.builtin.file:
+    path: "{{ home }}/.thunderbird"
+    src: "/mnt/scratch/thunderbird"
+    state: link
+    follow: false
+    force: true
+
+- name: Install thunderbird wrapper
+  ansible.builtin.copy:
+    dest: "{{ dot_local }}/bin/thunderbird"
+    src: thunderbird-wrapper.sh
+    mode: "0755"

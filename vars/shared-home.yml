@@ -5,5 +5,6 @@ distro: 'el{{ ansible_facts["distribution_major_version"] }}'
 # directory paths
 dot_local: "{{ home }}/.local/{{ distro }}"
 chess_dir: "/nfs/chess/user/{{ user }}"
+user_dir: "/nfs/user/{{ user }}"
 
 pkgsrc_dir: "{{ chess_dir }}/Pkgsrc/{{ distro }}"

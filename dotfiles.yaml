@@ -49,6 +49,7 @@
         file: "{{ module }}/tasks.yaml"
       loop:
         - i3
+        - shared-home
       loop_control:
         loop_var: module
       tags:
