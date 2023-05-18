@@ -256,6 +256,7 @@ exec --no-startup-id dunst
 
 for_window [class="Seahorse"] floating enable
 for_window [class="Virt-manager"] floating enable
+for_window [class="thunderbird-default" instance="Msgcompose"] floating enable
 
 # float zoom windows except the main meeting window
 for_window [class="zoom"] floating enable
