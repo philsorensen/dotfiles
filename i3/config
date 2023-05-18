@@ -241,7 +241,7 @@ bar {
 	}
 }
 
-# Set gaps, wallpaper, and compositor
+# Set gaps, wallpaper, compositor, notifications
 gaps inner 10px
 
 exec --no-startup-id feh --bg-fill $HOME/.config/i3/wallpaper/wallpaper.$DISTRO
@@ -250,6 +250,7 @@ exec --no-startup-id \
           --inactive-opacity 0.8 --active-opacity 1.0 \
           --shadow --shadow-exclude 'class_g = "i3bar"' \
           --opacity-rule '100:name *= "i3lock"'
+exec --no-startup-id dunst
 
 # Setup overrides for some windows
 

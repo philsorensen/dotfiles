@@ -1,0 +1,73 @@
+[global]
+    ### Display ###
+
+    monitor = 0
+    follow = none
+
+    geometry = "0x0-8+32"
+
+    separator_height = 2
+    padding = 16
+    horizontal_padding = 16
+    frame_width = 3
+
+    frame_color = "#3C6EB4"
+    separator_color = auto
+
+    idle_threshold = 120
+
+    ### Text ###
+
+    font = Monospace 10
+
+    markup = full
+    format = "<b>%s</b>\n%b"
+
+    alignment = center
+    vertical_alignment = center
+    show_age_threshold = 60
+    word_wrap = yes
+
+    ### Icons ###
+
+    icon_position = left
+    min_icon_size = 32
+    max_icon_size = 128
+
+    icon_path = /usr/share/icons/Adwaita/32x32/status/:/usr/share/icons/Adwaita/32x32/devices/
+
+    ### Misc/Advanced ###
+
+    browser = firefox -new-tab
+
+    corner_radius = 5
+
+    ### Mouse ###
+
+    mouse_left_click = do_action, close_current
+    mouse_middle_click = do_action, close_current
+    mouse_right_click = close_all
+
+[urgency_low]
+    background = "#294172"
+    foreground = "#FFFFFF"
+    timeout = 10
+    # Icon for notifications with low urgency, uncomment to enable
+    icon =
+
+[urgency_normal]
+    background = "#294172"
+    foreground = "#FFFFFF"
+    timeout = 10
+    # Icon for notifications with normal urgency, uncomment to enable
+    icon =
+
+[urgency_critical]
+    background = "#900000"
+    foreground = "#FFFFFF"
+    frame_color = "#FF0000"
+    timeout = 0
+    # Icon for notifications with critical urgency, uncomment to enable
+    icon = /usr/share/icons/Adwaita/32x32/status/dialog-warning.png
+
+# vim: ft=cfg

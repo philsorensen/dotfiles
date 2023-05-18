@@ -35,6 +35,19 @@
     - dmenu_path
     - dmenu_run
 
+- name: Check dunst symlinks
+  ansible.builtin.file:
+    path: "{{ dot_local }}/bin/{{ item }}"
+    src: "{{
+      (distro == 'el7')
+        | ternary(home + '/Programs/dunst-1.5.0/bin/' + item,
+                  chess_dir + '/Pkgsrc/' + distro + '/bin/' + item)
+    }}"
+    state: link
+  loop:
+    - dunst
+    - dunstctl
+
 - name: Get dex autostart program
   ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/jceb/dex/master/dex
@@ -42,10 +55,14 @@
     mode: "0755"
 
 
-- name: Create ~/.config/i3 directory
+- name: Create ~/.config directories
   ansible.builtin.file:
-    path: "{{ home }}/.config/i3"
+    path: "{{ home }}/.config/{{ item }}"
     state: directory
+  loop:
+    - autostart
+    - dunst
+    - i3
 
 - name: Copy i3 config file
   ansible.builtin.copy:
@@ -57,11 +74,6 @@
     dest: "{{ home }}/.config/i3/"
     src: wallpaper
 
-- name: Check/Create autostart directory
-  ansible.builtin.file:
-    path: "{{ home }}/.config/autostart"
-    state: directory
-
 - name: Disable some system autostarted programs
   ansible.builtin.copy:
     dest: "{{ home }}/.config/autostart/{{ item }}"
@@ -72,3 +84,8 @@
     - sealertauto.desktop
     - vmware-user.desktop
     - xfce4-power-manager.desktop
+
+- name: Copy dunst config files
+  ansible.builtin.copy:
+    dest: "{{ home }}/.config/dunst/dunstrc"
+    src: dunstrc
