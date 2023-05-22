@@ -31,10 +31,12 @@
 
 - name: Install vivaldi profile wrapper
   ansible.builtin.copy:
-    dest: "{{ dot_local }}/bin/vivaldi"
+    dest: "{{ dot_local }}/bin/{{ item }}"
     src: vivaldi-wrapper.sh
     mode: "0755"
-
+  loop:
+    - vivaldi
+    - vivaldi-stable
 
 - name: Create home directory profile link for thunderbird
   ansible.builtin.file:
