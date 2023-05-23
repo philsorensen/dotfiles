@@ -1,5 +1,9 @@
 ---
-# check that package / symlink is installed
+- name: Check/Install tmux on archlinux
+  community.general.pacman:
+    name: tmux
+  when: ansible_distribution == "Archlinux"
+  become: true
 
 - name: Check tmux symlink
   ansible.builtin.file:

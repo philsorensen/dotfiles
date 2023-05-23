@@ -11,3 +11,7 @@ ssh
 
 misc
  - i18n ?
+ - startship from_json instead of grep
+
+arch
+ - use system npm / ansible core

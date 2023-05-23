@@ -1,11 +1,22 @@
 ---
+- name: Check/Install emacs and JetBrainsMono font on archlinux
+  community.general.pacman:
+    name: "{{ item }}"
+  loop:
+    - emacs-nativecomp
+    - ttf-jetbrains-mono
+  when: ansible_distribution == "Archlinux"
+  become: true
+
+# Check links and install JetBrainsMono font on CLASSE systems
 - name: Check emacs directory symlink
   ansible.builtin.stat:
     path: "{{ home }}/Programs/emacs.{{ distro }}"
   register: emacs_link
-  failed_when: (emacs_link.stat.islnk is not defined or not emacs_link.stat.islnk)
+  failed_when:
+    (emacs_link.stat.islnk is not defined or not emacs_link.stat.islnk)
   tags:
-    - shared-home
+    - classe
 
 - name: Copy emacs wrapper script
   ansible.builtin.copy:
@@ -13,7 +24,7 @@
     src: emacs-wrapper
     mode: "0755"
   tags:
-    - shared-home
+    - classe
 
 - name: Create links to wrapper
   ansible.builtin.file:
@@ -26,8 +37,7 @@
     - emacsclient
     - etags
   tags:
-    - shared-home
-
+    - classe
 
 - name: Create directories for JetBrains Mono fonts
   ansible.builtin.file:

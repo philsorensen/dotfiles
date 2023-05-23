@@ -6,8 +6,9 @@ export DISTRO=$(
 
     case $( [[ ${ID_LIKE} == *rhel* ]] && echo "el" || echo "${ID}" ) in
 #        "arch" | "debian" )
-#            echo "${ID}"
-#            ;;
+        "arch" )
+            echo "${ID}"
+            ;;
         "el" )
             major="${VERSION:0:1}"
             [ "$major" == "7" -o "${major}" == "9" ] && echo "el${major}"
@@ -22,18 +23,20 @@ export SHARED_HOME=$(
 
 # set ".local" directory
 export DOTLOCAL=$(
-    [ -z "${DISTRO}" ] && echo ""
     [ -z "${SHARED_HOME}" ] && echo ".local" || echo ".local/${DISTRO}"
 )
 
-# use keyring for kerberos cache
-export KRB5CCNAME="KEYRING:persistent:$(id -u)"
+# set other variables if supported distro
+if [ -n "${DISTRO}" ]; then
+    # use keyring for kerberos cache
+    export KRB5CCNAME="KEYRING:persistent:$(id -u)"
 
-# set XDG_*_HOME variables
-export XDG_CONFIG_HOME="${HOME}/.config"
-export XDG_DATA_HOME="${HOME}/${DOTLOCAL}/share"
-export XDG_STATE_HOME="${HOME}/${DOTLOCAL}/state"
+    # set XDG_*_HOME variables
+    export XDG_CONFIG_HOME="${HOME}/.config"
+    export XDG_DATA_HOME="${HOME}/${DOTLOCAL}/share"
+    export XDG_STATE_HOME="${HOME}/${DOTLOCAL}/state"
 
-# set prefered applications
-export TERMINAL="alacritty"
-export EDITOR="vim"
+    # set prefered applications
+    export TERMINAL="alacritty"
+    export EDITOR="vim"
+fi

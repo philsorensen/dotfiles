@@ -1,4 +1,14 @@
 ---
+- name: Install/check python, pip, and pipx on archlinux
+  community.general.pacman:
+    name: "{{ item }}"
+  loop:
+    - python
+    - python-pip
+    - python-pipx
+  when: ansible_distribution == "Archlinux"
+  become: true
+
 - name: Create needed 'shared-home' directories
   ansible.builtin.file:
     dest: "{{ item }}"
@@ -6,13 +16,15 @@
   loop:
     - "{{ chess_dir }}/Python/pipx/{{ distro }}"
     - "{{ chess_dir }}/Python/venvs"
-  tags: shared-home
+  tags:
+    - shared-home
 
-
-- name: Install pipx
+- name: Install pipx on CLASSE systems
   ansible.builtin.pip:
     executable: /usr/bin/pip3
     name: pipx
+  tags:
+    - classe
 
 - name: Mask pip and pip3
   ansible.builtin.copy:
@@ -30,9 +42,16 @@
         | ternary('/opt/rh/rh-python38/root/bin/python3','/usr/bin/python3')
     }}"
 
+- name: Set pipx binary
+  ansible.builtin.set_fact:
+    pipx_binary: "{{
+      ( 'classe' in ansible_run_tags )
+        | ternary(dot_local+'/bin/pipx','/bin/pipx')
+    }}"
+
 - name: Install general python packages
   community.general.pipx:
-    executable: "{{ dot_local }}/bin/pipx"
+    executable: "{{ pipx_binary }}"
     name: "{{ item }}"
     state: install
     python: "{{ pipx_python }}"
@@ -42,7 +61,7 @@
 
 - name: Inject pdm plugins
   community.general.pipx:
-    executable: "{{ dot_local }}/bin/pipx"
+    executable: "{{ pipx_binary }}"
     name: pdm
     inject_packages: "{{ item }}"
     state: inject
@@ -52,7 +71,7 @@
 
 - name: Upgrade pipx packages
   community.general.pipx:
-    executable: "{{ dot_local }}/bin/pipx"
+    executable: "{{ pipx_binary }}"
     include_injected: true
     state: upgrade_all
     python: "{{ pipx_python }}"

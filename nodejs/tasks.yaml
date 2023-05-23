@@ -1,4 +1,13 @@
 ---
+- name: Install nodejs LTS and npm on archlinux
+  community.general.pacman:
+    name: "{{ item }}"
+  loop:
+    - nodejs-lts-hydrogen
+    - npm
+  when: ansible_distribution == "Archlinux"
+  become: true
+
 - name: Install npm config file
   ansible.builtin.template:
     dest: "{{ home }}/.npmrc"

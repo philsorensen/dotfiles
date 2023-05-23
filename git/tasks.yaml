@@ -1,4 +1,10 @@
 ---
+- name: Install git on archlinux
+  community.general.pacman:
+    name: git
+  when: ansible_distribution == "Archlinux"
+  become: true
+
 - name: Install git config file
   ansible.builtin.template:
     dest: "{{ home }}/.gitconfig"
