@@ -4,7 +4,7 @@
 # the kinit and kswitch if needed.
 #
 
-export KUSER=${1:pas37}
+export KUSER=${1:-pas37}
 export UPN=$(klist -l | sed -n '3p' | awk '{print $1}')
 
 set_upn() {
