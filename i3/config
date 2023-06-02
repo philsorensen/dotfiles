@@ -261,4 +261,3 @@ for_window [class="thunderbird-default" instance="Msgcompose"] floating enable
 # float zoom windows except the main meeting window
 for_window [class="zoom"] floating enable
 for_window [class="zoom" title="Zoom Meeting"] floating disable
-for_window [class="zoom" title="Zoom"] floating disable
