@@ -1,4 +1,16 @@
 ---
+- name: General python packages
+  set_fact:
+    python_packages:
+      - black
+
+- name: Classe python packages
+  set_fact:
+    python_packages: "{{ python_packages + ['ansible-core'] }}"
+  tags:
+    - classe
+
+
 - name: Install/check python, pip, and pipx on archlinux
   community.general.pacman:
     name: "{{ item }}"
@@ -26,6 +38,7 @@
   tags:
     - classe
 
+
 - name: Mask pip and pip3
   ansible.builtin.copy:
     dest: "{{ dot_local }}/bin/{{ item }}"
@@ -49,15 +62,13 @@
         | ternary(dot_local+'/bin/pipx','/bin/pipx')
     }}"
 
-- name: Install general python packages
+
+- name: Install pdm packages
   community.general.pipx:
     executable: "{{ pipx_binary }}"
-    name: "{{ item }}"
+    name: pdm
     state: install
     python: "{{ pipx_python }}"
-  loop:
-    - ansible-core
-    - pdm
 
 - name: Inject pdm plugins
   community.general.pipx:
@@ -69,14 +80,7 @@
   loop:
     - pdm-autoexport
 
-- name: Upgrade pipx packages
-  community.general.pipx:
-    executable: "{{ pipx_binary }}"
-    include_injected: true
-    state: upgrade_all
-    python: "{{ pipx_python }}"
-
-- name: Create ~/.config/pdm
+- name: Create ~/.config/pdm directory
   ansible.builtin.file:
     path: "{{ home }}/.config/pdm"
     state: directory
@@ -85,3 +89,32 @@
   ansible.builtin.template:
     dest: "{{ home }}/.config/pdm/config.toml"
     src: config.toml.j2
+
+
+- name: Install general python packages
+  community.general.pipx:
+    executable: "{{ pipx_binary }}"
+    name: "{{ item }}"
+    state: install
+    python: "{{ pipx_python }}"
+  loop: "{{ python_packages }}"
+
+- name: Find add cat pipx files in other modules
+  shell: "find {{ playbook_dir }} -name 'pipx' -exec cat {} ';'"
+  register: pipx_pkgs
+  changed_when: False
+
+- name: Install module python packages
+  community.general.pipx:
+    executable: "{{ pipx_binary }}"
+    name: "{{ item }}"
+    state: install
+    python: "{{ pipx_python }}"
+  loop: "{{ pipx_pkgs.stdout_lines }}"
+
+- name: Upgrade pipx packages
+  community.general.pipx:
+    executable: "{{ pipx_binary }}"
+    include_injected: true
+    state: upgrade_all
+    python: "{{ pipx_python }}"
