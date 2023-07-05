@@ -17,7 +17,8 @@ if ! command -v ansible-playbook >/dev/null; then
  fi
 
 # set tags
-[ "$(hostname -d)" == "classe.cornell.edu" ] && tags="${tags},classe"
+[ "$(hostname | sed 's/[^\.]*\.//')" == "classe.cornell.edu" ] \
+                                              && tags="${tags},classe"
 [ "$(stat --format=%T -f ${HOME})" == "nfs" ] && tags="${tags},shared-home"
 
 if [ -z "$1" ]; then

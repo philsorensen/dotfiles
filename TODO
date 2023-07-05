@@ -6,8 +6,8 @@ i3
  - i3bar update
 
 ssh
- - set TERM type for fallback
- - manage keys from storage
+ - use screen in TERM fallback if screen is set
+ - manage keys from bitwarden
 
 misc
  - i18n ?

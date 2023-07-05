@@ -1,5 +1,8 @@
 ---
 email: "pas37@cornell.edu"
 
+# distribution
+distro: 'el{{ ansible_facts["distribution_major_version"] }}'
+
 # directory paths
-pkgsrc_dir: "{{ home }}/Pkgsrc/pkgs"
+pkgsrc_dir: "{{ home }}/Programs/Pkgsrc/{{ distro }}"

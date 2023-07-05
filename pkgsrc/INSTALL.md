@@ -11,26 +11,26 @@ install path.
 
 ---
 
-1. In <pkgsrc_dir> run `code`https://github.com/netbsd/pkgsrc.git -b trunk`code`
+1. In <pkgsrc_dir> run `git clone https://github.com/netbsd/pkgsrc.git -b trunk`
 
 2. Bootstrap the system
-`code`
-   cd <pkgsrc_dir>/pkgsrc/bootstrap
-   ./bootstrap --prefix <pkgsrc_dir>/<os> -unprivileged \
-               --make-jobs x --workdir=/tmp/pkgsrc-work
-`code`
+```
+    cd <pkgsrc_dir>/pkgsrc/bootstrap
+    ./bootstrap --prefix <pkgsrc_dir>/<os> -unprivileged \
+                --make-jobs x --workdir=/tmp/pkgsrc-work
+```
 
 3. Modify etc/mk.conf to add the lines
 
 after PKGMANDIR
-`code`
-   WRKOBJDIR=		/tmp/pkgsrc-work
-   DISTDIR=		/tmp/pkgsrc-distfiles
-   PACKAGES=		<pkgsrc_dir>/<os>/packages
+```
+    WRKOBJDIR=		/tmp/pkgsrc-work
+    DISTDIR=		/tmp/pkgsrc-distfiles
+    PACKAGES=		<pkgsrc_dir>/<os>/packages
 
-   MAKE_JOBS=		4
-`code`
+    MAKE_JOBS=		4
+```
 after PREFER_PKGSRC
-`code`
-   PKG_DEFAULT_OPTIONS=	-doc
-`code`
+```
+    PKG_DEFAULT_OPTIONS=	-doc
+```

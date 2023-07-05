@@ -17,6 +17,10 @@
   community.general.npm:
     global: true
     name: "{{ item }}"
-    state: latest
   loop:
     - npm
+
+- name: Upgrade all global npm packages
+  community.general.npm:
+    global: true
+    state: latest
