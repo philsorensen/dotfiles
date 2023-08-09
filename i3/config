@@ -258,7 +258,7 @@ exec --no-startup-id autotiling -l 2
 # Setup overrides for some windows
 for_window [class="Seahorse"] floating enable
 for_window [class="Virt-manager"] floating enable
-for_window [class="thunderbird-default" instance="Msgcompose"] floating enable
+for_window [class="thunderbird" instance="Msgcompose"] floating enable
 for_window [class="Nxplayer.bin"] floating enable
 for_window [class="Blueman-manager"] floating enable
 
