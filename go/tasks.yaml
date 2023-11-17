@@ -1,0 +1,24 @@
+---
+- name: Set go_path
+  ansible.builtin.set_fact:
+    go_path: "{{
+      (chess_dir | default('') == '')
+        | ternary('{{ home }}/Programs/Go', '{{ chess_dir }}/Go')
+    }}"
+  tags:
+    - classe
+
+- name: Create $GOPATH
+  ansible.builtin.file:
+    dest: "{{ go_path }}"
+    state: directory
+  tags:
+    - classe
+
+
+- name: Install go tools
+  ansible.builtin.command: "go install {{ item }}"
+  loop:
+    - "golang.org/x/tools/gopls@latest"
+  changed_when: false
+

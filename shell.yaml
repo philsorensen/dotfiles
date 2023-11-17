@@ -9,10 +9,13 @@
   connection: local
 
   tasks:
-    - name: Copy other shell setup files from other directories
+    - name: Copy shell setup files from other modules for classe tag
       ansible.builtin.copy:
         src: "{{ item }}"
         dest: "{{ home }}/.config/bash/{{ item | basename }}"
       loop:
+        - go/10-golang-login.sh
         - python/10-python-login.sh
         - ssh/20-ssh-krb-rc.sh
+      tags:
+        - classe
