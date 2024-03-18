@@ -198,7 +198,7 @@ client.background       #FFFFFF
 bar {
 	i3bar_command "i3bar -t"
 
-	#output primary
+	output primary
 	position top
 
 	# colors from Fedora i3 config
@@ -219,8 +219,6 @@ bar {
 	tray_padding 2
 }
 
-# TODO: Bug in 4.22 does not let this bar work.  Once fixed, un-comment output
-# above and remove this comment.
 bar {
 	i3bar_command "i3bar -t"
 
@@ -247,9 +245,7 @@ gaps inner 10px
 exec --no-startup-id feh --bg-fill $HOME/.config/i3/wallpaper/wallpaper.$DISTRO
 exec --no-startup-id \
     picom --corner-radius 5 \
-          --inactive-opacity 0.8 --active-opacity 1.0 \
-          --shadow --shadow-exclude 'class_g = "i3bar"' \
-          --opacity-rule '100:name *= "i3lock"'
+          --shadow --shadow-exclude 'class_g = "i3bar"' 
 exec --no-startup-id dunst
 
 # run autotiling for "dynamic layout"
