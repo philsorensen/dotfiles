@@ -3,7 +3,7 @@
   ansible.builtin.set_fact:
     go_path: "{{
       (chess_dir | default('') == '')
-        | ternary('{{ home }}/Programs/Go', '{{ chess_dir }}/Go')
+        | ternary(home+'/Programs/Go', chess_dir+'/Go')
     }}"
   tags:
     - classe
