@@ -19,7 +19,7 @@ fi
 
 # aliases
 alias ls='LC_COLLATE=C ls --color=auto'
-
+alias usage="du -hcsx * .* --exclude='.' --exclude='..' | sort -h"
 
 # setup only used on "supported" distros
 if [ -n "${DISTRO}" ]; then
