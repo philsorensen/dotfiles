@@ -1,17 +1,61 @@
 ---
-- name: Set go_path
-  ansible.builtin.set_fact:
-    go_path: "{{
+- name: CLASSE golang setup
+  vars:
+    go_version: "{{
+      (
+        lookup(
+          'url',
+          'https://go.dev/dl/?mode=json',
+          split_lines=false
+        ) | from_json
+      )[0].get('version')
+    }}"
+    go_base: "{{
       (chess_dir | default('') == '')
         | ternary(home+'/Programs/Go', chess_dir+'/Go')
     }}"
-  tags:
-    - classe
+    go_root: "{{ go_base }}/go"
+    go_path: "{{ go_base }}/workspace"
+  block:
+    - name: Create go_base
+      ansible.builtin.file:
+        dest: "{{ go_base }}"
+        state: directory
 
-- name: Create $GOPATH
-  ansible.builtin.file:
-    dest: "{{ go_path }}"
-    state: directory
+    - name: Read installed go version
+      ansible.builtin.command: "head -1 {{ go_root }}/VERSION"
+      ignore_errors: true
+      register: go_installed
+      changed_when: false
+
+    - name: Install go
+      block:
+        - name: Remove current go
+          ansible.builtin.file:
+            path: "{{ go_root }}"
+            state: absent
+          when: go_installed is succeeded
+
+        - name: Download and unpack go
+          ansible.builtin.unarchive:
+            src: "https://go.dev/dl/{{ go_version }}.linux-amd64.tar.gz"
+            dest: "{{ go_base }}"
+            remote_src: true
+      when: go_installed is failed or go_version is not in go_installed.stdout
+
+    - name: Check and create golang links
+      ansible.builtin.file:
+        path: "{{ dot_local}}/bin/{{ item }}"
+        src: "{{ go_base }}/go/bin/{{ item }}"
+        state: link
+      loop:
+        - go
+        - gofmt
+
+    - name: Create $GOPATH
+      ansible.builtin.file:
+        dest: "{{ go_path }}"
+        state: directory
   tags:
     - classe
 

@@ -5,9 +5,11 @@
 #
 
 if [ "${SHARED_HOME}" == "YES" ]; then
-    export GOPATH="${CHESS_DIR}/Go"
+    export GOROOT="${CHESS_DIR}/Go/go"
+    export GOPATH="${CHESS_DIR}/Go/workspace"
 else
-    export GOPATH="${HOME}/Programs/Go"
+    export GOROOT="${HOME}/Programs/Go/go"
+    export GOPATH="${HOME}/Programs/Go/workspace"
 fi
 
 alter_path add ${GOPATH}/bin
