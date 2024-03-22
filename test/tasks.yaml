@@ -1,5 +1,0 @@
----
-# tasks file for test
-- name: new role
-  debug:
-    msg: "{{ lookup('ansible.builtin.env', 'TEST', default='not set') }}"
