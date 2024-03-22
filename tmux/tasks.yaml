@@ -7,10 +7,12 @@
 
 - name: Check tmux symlink
   ansible.builtin.file:
-    src: "{{ pkgsrc_dir }}/bin/tmux"
+    src: "{{ home }}/Programs/tmux.{{ distro }}/bin/tmux"
     dest: "{{ dot_local }}/bin/tmux"
     state: link
   when: ansible_facts['os_family'] == "RedHat"
+  tags:
+    - classe
 
 
 - name: Copy tmux config file
