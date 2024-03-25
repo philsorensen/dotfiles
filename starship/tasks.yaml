@@ -2,14 +2,25 @@
 - name: Download latest starship from GitHub
   ansible.builtin.unarchive:
     src: "{{
-      lookup('url',
-             'https://api.github.com/repos/starship/starship/releases/latest',
-             split_lines = false)
-      | regex_search('browser_download_url.*(https://(.*?).tar.gz)', '\\1')
-      | first
+      (lookup('url',
+              'https://api.github.com/repos/starship/starship/releases/latest',
+              split_lines = false) | from_json
+      ).get('assets')[-2].get('browser_download_url')
     }}"
     dest: "{{ dot_local }}/bin"
     remote_src: true
+
+#- name: Download latest starship from GitHub
+#  ansible.builtin.unarchive:
+#    src: "{{
+#      lookup('url',
+#             'https://api.github.com/repos/starship/starship/releases/latest',
+#             split_lines = false)
+#      | regex_search('browser_download_url.*(https://(.*?).tar.gz)', '\\1')
+#      | first
+#    }}"
+#    dest: "{{ dot_local }}/bin"
+#    remote_src: true
 
 - name: Copy starship config file
   ansible.builtin.copy:
