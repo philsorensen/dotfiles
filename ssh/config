@@ -4,6 +4,14 @@ Host github.com gitlab01.*
 Host *.chess.cornell.edu *.classe.cornell.edu
     User pas37
 
+Host bld* flex* hps* ubt* fscit*
+    PreferredAuthentications password
+    User admin
+    HostKeyAlgorithms +ssh-dss
+    PubkeyAcceptedKeyTypes +ssh+dss
+    KexAlgorithms +diffie-hellman-group-exchange-sha1,diffie-hellman-group1-sha1
+    Ciphers +aes256-cbc,3des-cbc
+
 Host *
     ControlMaster auto
     ControlPath ~/.ssh/master-%l-%r@%h:%p
