@@ -18,7 +18,8 @@
     }}"
     njs_base: "{{
       (chess_dir | default('') == '')
-        | ternary(home+'/Programs/Node.js', chess_dir+'/Node.js')
+        | ternary(home+'/Programs/Node.js',
+                  (chess_dir | default(''))+'/Node.js')
     }}"
   block:
     - name: Create njs_base

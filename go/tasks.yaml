@@ -12,7 +12,7 @@
     }}"
     go_base: "{{
       (chess_dir | default('') == '')
-        | ternary(home+'/Programs/Go', chess_dir+'/Go')
+        | ternary(home+'/Programs/Go', (chess_dir | default(' '))+'/Go')
     }}"
     go_root: "{{ go_base }}/go"
     go_path: "{{ go_base }}/workspace"
