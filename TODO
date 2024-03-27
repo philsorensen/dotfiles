@@ -9,8 +9,12 @@ ssh
  - use screen in TERM fallback if screen is set
  - manage keys from bitwarden
 
-misc
- - i18n ?
+look at contrib
+ - dunst
+ - i3
 
-arch
- - use system npm / ansible core
+add
+ - rust
+ - alacriity
+
+move things to /nfs/chess/scratch/
