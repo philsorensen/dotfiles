@@ -1,29 +1,80 @@
 ---
-- name: Check pkcsrc symlinks for i3 and supporting binaries
+# NOTE: This module is normally only run on systems with shared-home tags
+
+- name: Create ~/.config directories
   ansible.builtin.file:
-    path: "{{ dot_local }}/bin/{{ item }}"
-    src: "{{ pkgsrc_dir }}/bin/{{ item }}"
-    state: link
+    path: "{{ home }}/.config/{{ item }}"
+    state: directory
   loop:
+    - autostart
+    - dunst
     - i3
-    - i3-config-wizard
-    - i3-dmenu-desktop
-    - i3-dump-log
-    - i3-input
-    - i3-migrate-config-to-v4
-    - i3-msg
-    - i3-nagbar
-    - i3-save-tree
-    - i3-sensible-editor
-    - i3-sensible-pager
-    - i3-sensible-terminal
-    - i3-with-shmlog
-    - i3bar
-    - feh
-    - picom
-    - picom-trans
-    - xss-lock
-  when: ansible_facts['os_family'] == "RedHat"
+
+- name: Copy wallpaper directory
+  ansible.builtin.copy:
+    dest: "{{ home }}/.config/i3/"
+    src: wallpaper
+
+- name: Non el7 configuration
+  when: distro != "el7"
+  block:
+    - name: Check symlinks to built binaries
+      ansible.builtin.file:
+        path: "{{ dot_local }}/bin/{{ item.bin }}"
+        src: "{{ home }}/Programs/{{ item.pkg }}/bin/{{ item.bin }}"
+        state: link
+      loop:
+        - { pkg: "dunst", bin: "dunst" }
+        - { pkg: "dunst", bin: "dunstctl" }
+        - { pkg: "dunst", bin: "dunstify" }
+        - { pkg: "feh", bin: "feh" }
+        - { pkg: "i3", bin: "i3" }
+        - { pkg: "i3", bin: "i3-config-wizard" }
+        - { pkg: "i3", bin: "i3-dmenu-desktop" }
+        - { pkg: "i3", bin: "i3-dump-log" }
+        - { pkg: "i3", bin: "i3-input" }
+        - { pkg: "i3", bin: "i3-migrate-config-to-v4" }
+        - { pkg: "i3", bin: "i3-msg" }
+        - { pkg: "i3", bin: "i3-nagbar" }
+        - { pkg: "i3", bin: "i3-save-tree" }
+        - { pkg: "i3", bin: "i3-sensible-editor" }
+        - { pkg: "i3", bin: "i3-sensible-pager" }
+        - { pkg: "i3", bin: "i3-sensible-terminal" }
+        - { pkg: "i3", bin: "i3-with-shmlog" }
+        - { pkg: "i3", bin: "i3bar" }
+        - { pkg: "picom", bin: "picom" }
+        - { pkg: "picom", bin: "picom-trans" }
+        - { pkg: "rofi", bin: "rofi" }
+        - { pkg: "rofi", bin: "rofi-sensible-terminal" }
+        - { pkg: "rofi", bin: "rofi-theme-selector" }
+        - { pkg: "xss-lock", bin: "xss-lock" }
+        - { pkg: "xssproxy", bin: "xssproxy" }
+
+    - name: Copy i3 config file
+      ansible.builtin.copy:
+        dest: "{{ home }}/.config/i3/config"
+        src: config
+
+    - name: Copy dunst config files
+      ansible.builtin.copy:
+        dest: "{{ home }}/.config/dunst/dunstrc"
+        src: dunstrc
+
+- name: EL7 configuration
+  when: distro == "el7"
+  block:
+    - name: Create i3 binary
+      ansible.builtin.copy:
+        dest: "{{ dot_local }}/bin/i3"
+        content: |
+          exec /usr/bin/i3 -c $HOME/.config/i3/config.el7 $@
+        mode: "0755"
+
+    - name: Copy i3 el7 config file
+      ansible.builtin.copy:
+        dest: "{{ home }}/.config/i3/config,el7"
+        src: config.el7
+
 
 - name: Check custom dmenu symlinks
   ansible.builtin.file:
@@ -35,57 +86,21 @@
     - dmenu_path
     - dmenu_run
 
-- name: Check dunst symlinks
-  ansible.builtin.file:
-    path: "{{ dot_local }}/bin/{{ item }}"
-    src: "{{
-      (distro == 'el7')
-        | ternary(home + '/Programs/dunst-1.5.0/bin/' + item,
-                  chess_dir + '/Pkgsrc/' + distro + '/bin/' + item)
-    }}"
-    state: link
-  loop:
-    - dunst
-    - dunstctl
-
 - name: Get dex autostart program
   ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/jceb/dex/master/dex
     dest: "{{ dot_local }}/bin/dex"
     mode: "0755"
 
-
-- name: Create ~/.config directories
-  ansible.builtin.file:
-    path: "{{ home }}/.config/{{ item }}"
-    state: directory
-  loop:
-    - autostart
-    - dunst
-    - i3
-
-- name: Copy i3 config file
-  ansible.builtin.copy:
-    dest: "{{ home }}/.config/i3/config"
-    src: config
-
-- name: Copy wallpaper directory
-  ansible.builtin.copy:
-    dest: "{{ home }}/.config/i3/"
-    src: wallpaper
-
 - name: Disable some system autostarted programs
   ansible.builtin.copy:
     dest: "{{ home }}/.config/autostart/{{ item }}"
     src: hidden.desktop
   loop:
+    - geoclue-demo-agent.desktop
     - org.gnome.Evolution-alarm-notify.desktop
     - print-applet.desktop
     - sealertauto.desktop
     - vmware-user.desktop
     - xfce4-power-manager.desktop
 
-- name: Copy dunst config files
-  ansible.builtin.copy:
-    dest: "{{ home }}/.config/dunst/dunstrc"
-    src: dunstrc
