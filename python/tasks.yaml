@@ -3,6 +3,8 @@
   set_fact:
     python_packages:
       - black
+      - meson
+      - ninja
 
 - name: Classe python packages
   set_fact:
