@@ -4,7 +4,7 @@ tmux
 
 i3
  - i3bar update
-
+ - scratch pad / move screen
 ssh
  - use screen in TERM fallback if screen is set
  - manage keys from bitwarden
