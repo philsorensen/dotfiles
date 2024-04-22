@@ -23,12 +23,6 @@
     mode: "0755"
 
 
-- name: Create profile directory link for vivaldi
-  ansible.builtin.file:
-    path: "{{ home }}/.config/vivaldi"
-    src: "{{ user_dir }}/Profiles/vivaldi"
-    state: link
-
 - name: Install vivaldi profile wrapper
   ansible.builtin.copy:
     dest: "{{ dot_local }}/bin/{{ item }}"
@@ -37,6 +31,7 @@
   loop:
     - vivaldi
     - vivaldi-stable
+
 
 - name: Create home directory profile link for thunderbird
   ansible.builtin.file:
