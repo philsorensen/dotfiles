@@ -36,6 +36,7 @@
 - name: Install pipx on CLASSE systems
   ansible.builtin.pip:
     executable: /usr/bin/pip3
+    extra_args: --user
     name: pipx
   tags:
     - classe
