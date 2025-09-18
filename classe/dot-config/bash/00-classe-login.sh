@@ -9,6 +9,7 @@
 # setup for shared home directory
 if [ "${SHARED_HOME}" == "YES" ]; then
     export CHESS_DIR="/nfs/chess/user/${USER}"
+    export SCRATCH_DIR="/nfs/chess/scratch/user/${USER}"
     export USER_DIR="/nfs/user/${USER}"
 
     # move cache directories to /tmp/$USER

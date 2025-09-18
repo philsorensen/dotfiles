@@ -1,6 +1,10 @@
 ---
+shared_home: True
+
 # directory paths
 dot_local: "{{ home }}/.local/{{ distro }}"
-chess_dir: "/nfs/chess/user/{{ user }}"
-user_dir: "/nfs/user/{{ user }}"
+program_dir: "{{scratch_dir }}"
 
+chess_dir: "/nfs/chess/user/{{ user }}"
+scratch_dir: "/nfs/chess/scratch/user/{{ user }}"
+user_dir: "/nfs/user/{{ user }}"

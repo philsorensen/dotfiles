@@ -4,7 +4,7 @@
 # for non-GUI interactive login shells (terminal and SSH).  Other
 # interactive setup should be done in the .bashrc file.  Files in the
 # configuration directory with the pattern *-login.sh are sourced.
-# In interactive shells the ~/.bashrc is also sourced.  
+# In interactive shells the ~/.bashrc is also sourced.
 #
 config_dir=${HOME}/.config/bash
 
@@ -12,13 +12,13 @@ source ${config_dir}/environment
 source ${config_dir}/functions
 
 
-# remove ~/bin and ~/.local/bin from PATH 
+# remove ~/bin and ~/.local/bin from PATH
 alter_path remove ${HOME}/bin
 alter_path remove ${HOME}/.local/bin
 
 # add $LOCALDIR/bin to PATH on supported distos
 if [ -n "${DISTRO}" ]; then
-    alter_path add ${HOME}/${DOTLOCAL}/bin
+    alter_path add ${DOT_LOCAL}/bin
 fi
 export PATH
 
@@ -29,7 +29,7 @@ if [ -n "${DISTRO}" ]; then
     done
 fi
 
-# clean up functions 
+# clean up functions
 functions_clean
 
 # Return if not interactive
@@ -48,7 +48,7 @@ if [ -n ${DISTRO} ]; then
             else
                 host="${USER}"
             fi
-            tmux has -t ${host} && tmux attach -t ${host} || tmux new -s $host
+            tmux has -t ${host} && tmux attach -t ${host} || tmux new -s ${host}
             exit
         fi
     fi

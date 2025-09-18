@@ -1,0 +1,53 @@
+---
+# Setup the things needed by the dotfiles.
+#
+# This playbook does the needed setup and package and program
+# installs used by various dotfile configurations.
+#
+- hosts: local
+  connection: local
+
+  vars:
+    os_type: "{{ ansible_facts['os_family'] | lower }}"
+
+
+  pre_tasks:
+    - name: Include default variables
+      ansible.builtin.include_vars:
+        file: default.yaml
+
+    - name: Include distro specfic variables
+      ansible.builtin.include_vars:
+        file: "{{ os_type }}.yaml"
+
+    - name: Check for shared home directory
+      ansible.builtin.shell: >
+        stat --format=%T -f {{ home }}
+      register: home_fs
+      changed_when: false
+
+    - name: Include shared home directory specfic variables
+      ansible.builtin.include_vars:
+        file: shared-home.yml
+      when:
+        - home_fs.stdout == "nfs"
+
+
+  tasks:
+
+    - name: Create needed directories
+      ansible.builtin.file:
+        dest: "{{ item }}"
+        state: directory
+      loop:
+        - "{{ home }}/.config/"
+        - "{{ dot_local }}/bin"
+        - "{{ dot_local }}/lib"
+        - "{{ dot_local }}/share"
+        - "{{ dot_local }}/share/applications"
+        - "{{ dot_local }}/share/man"
+        - "{{ dot_local }}/state"
+
+    - name: Incluide OS specific tasks
+      ansible.builtin.include_tasks:
+        file: "dotfiles-{{ os_type }}.yaml"

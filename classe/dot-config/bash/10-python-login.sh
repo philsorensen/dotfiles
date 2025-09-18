@@ -7,12 +7,10 @@
 # setup for shared home directory
 if [ "${SHARED_HOME}" == "YES" ]; then
     # change "user" directory to distro specific directory
-    export PYTHONUSERBASE="${HOME}/${DOTLOCAL}"
+    export PYTHONUSERBASE="${DOT_LOCAL}"
 
     # move location of pipx storage and bin to distro specfic directories
-    export PIPX_HOME="${CHESS_DIR}/Python/pipx/${DISTRO}"
-    export PIPX_BIN_DIR="${HOME}/${DOTLOCAL}/bin"
-
-    # set virtualenv directory
-    export WORKON_HOME="${CHESS_DIR}/Python/venvs"
+    export PIPX_HOME="${SCRATCH_DIR}/Python/pipx-${DISTRO}"
+    export PIPX_BIN_DIR="${DOT_LOCAL}/bin"
+    export PIPX_MAN_DIR="${DOT_LOCAL}/share/man"
 fi

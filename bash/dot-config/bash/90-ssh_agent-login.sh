@@ -4,7 +4,7 @@
 # uses the standard ssh-agent.
 #
 
-# only run if there is not an "active" .#90-ssh_agent-login.sh
+# only run if there is not an "active" SSH agent
 if [ -z "${SSH_AUTH_SOCK}" -o -n "${SSH_AGENT_PID}" ]; then
     eval $(ssh-agent -s)
     export SSH_AGENT_PID SSH_AUTH_SOCK

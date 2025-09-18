@@ -4,10 +4,8 @@
 # including both laptops and shared home directories.
 #
 
-# activate some Software Collection on SL7
-if [ "${DISTRO}" == "el7" ]; then
-    source scl_source enable llvm-toolset-7.0 rh-git218 rh-nodejs14
-fi
+# Add local module directory
+module use ${HOME}/.config/modulefiles
 
 
 # setup for shared home directory

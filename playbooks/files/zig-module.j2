@@ -1,0 +1,8 @@
+#%Module1.0
+proc ModulesHelp { } {
+    puts stderr "\tEnable zig {{ zig_ver }}"
+}
+
+module-whatis "Enable zig {{ zig_ver }}"
+
+prepend-path PATH /nfs/chess/scratch/user/test-pas37/Zig/zig-linux-x86_64-{{ zig_ver}}

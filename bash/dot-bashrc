@@ -25,7 +25,7 @@ alias usage="du -hcsx * .* --exclude='.' --exclude='..' | sort -h"
 if [ -n "${DISTRO}" ]; then
     # set prompt
     eval "$(starship init bash)"
-    
+
     # source additional interactive configurations
     for file in ${config_dir}/*-rc.sh; do
         [ -r "${file}" ] && . $file

@@ -7,3 +7,6 @@ home: "{{ ansible_user_dir }}"
 
 # directory paths
 dot_local: "{{ home }}/.local"
+
+# other
+shared_home: False

@@ -1,0 +1,54 @@
+# environment - set various environment variables  -*- mode: sh -*-
+#
+# This file sets the various environmental variables used in the bash
+# environment and startup scripts.  The DISTRO variable is use to to
+# tell if a distribution is "supported".
+#
+# The "non-standard" variables set in this file
+#
+# DISTRO:
+#   The distribution is set from the PLATFORM_ID on EL based systems
+#   and from ID on the rest.  If the value is blank or unset the
+#   distribution is non-supported.
+#
+# SHARED_HOME:
+#   Set on systems waith a NFS mounted $HOME directory.
+#
+# DOT_LOCAL:
+#   USed as the base directory for PATH and XDG home variables.
+#
+
+distro=$(source /etc/os-release; d="${PLATFORM_ID##*:}"; echo "${d:-$ID}")
+fs_type=$(stat --format=%T -f ${HOME})
+
+# default values
+DISTRO=""
+SHARED_HOME=""
+DOT_LOCAL="${HOME}/.local"
+
+# setup environment on supported systems
+case ${distro} in
+    "el9" | "arch")
+        DISTRO=${distro}
+
+        [ "${fs_type}" == "nfs" ] && SHARED_HOME="YES"
+        [ -n "${SHARED_HOME}" ] && DOT_LOCAL="${HOME}/.local/${DISTRO}"
+
+        # use keyring for kerberos cache
+        export KRB5CCNAME="KEYRING:persistent:$(id -u)"
+
+        # set XDG_*_HOME variables
+        export XDG_CONFIG_HOME="${HOME}/.config"
+        export XDG_DATA_HOME="${DOT_LOCAL}/share"
+        export XDG_STATE_HOME="${DOT_LOCAL}/state"
+
+        # set prefered applications
+        export TERMINAL="ghostty"
+        export EDITOR="vim"
+        ;;
+    *)
+        [[ $- == *i* ]] && echo "Distribution is NOT support by dotfiles"
+        ;;
+esac
+
+export DISTRO SHARED_HOME DOT_LOCAL

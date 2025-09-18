@@ -4,3 +4,7 @@ email: "pas37@cornell.edu"
 # distribution
 distro: 'el{{ ansible_facts["distribution_major_version"] }}'
 
+python_el9: /bin/python3.12
+
+# directories
+program_dir: '{{ home }}/Programs'

@@ -1,0 +1,160 @@
+---
+- name: Create additional directories for shared $HOME
+  ansible.builtin.file:
+    dest: "{{ item }}"
+    state: directory
+    mode: 0755
+  when: shared_home == True
+  loop:
+    - "{{ chess_dir }}"
+    - "{{ scratch_dir }}"
+
+- name: Create additional directories for EL
+  ansible.builtin.file:
+    dest: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ home }}/.config/modulefiles"
+    - "{{ program_dir }}"
+
+
+- name: Install zig (for building ghostty)
+  vars:
+    zig_ver: 0.13.0
+    zig_base: "{{ program_dir }}/Zig"
+
+  block:
+    - name: Create zig base directory
+      ansible.builtin.file:
+        dest: "{{ zig_base }}"
+        state: directory
+
+    - name: Download and unpack zig
+      ansible.builtin.unarchive:
+        src: "https://ziglang.org/download/{{zig_ver}}/zig-linux-x86_64-{{zig_ver}}.tar.xz"
+        dest: "{{ zig_base }}"
+        remote_src: true
+
+    - name: Create zig modulefiles directory
+      ansible.builtin.file:
+        dest: "{{ home }}/.config/modulefiles/zig"
+        state: directory
+
+    - name: Create modulefile
+      ansible.builtin.template:
+        src: "files/zig-module.j2"
+        dest: "{{ home }}/.config/modulefiles/zig/{{ zig_ver }}"
+
+
+- name: Manage pipx and default python packages
+  vars:
+    pipx_python: "{{ vars['python_' + distro] }}"
+    pipx_bin: "{{ dot_local }}/bin"
+    pipx_home: "{{ shared_home
+        | ternary(program_dir+'/Python/pipx-'+distro, dot_local+'/share/pipx')
+      }}"
+
+    python_packages:
+      - ansible
+      - ninja
+      - meson
+      - uv
+
+  block:
+    - name: Create $PIPX_HOME directory if needed
+      ansible.builtin.file:
+        dest: "{{ item }}"
+        state: directory
+      when: shared_home == True
+      loop:
+        - "{{ program_dir }}/Python"
+        - "{{ program_dir }}/Python/pipx-{{ distro }}"
+
+    - name: Install pipx
+      ansible.builtin.pip:
+        executable: /bin/pip
+        extra_args: --user
+        name: pipx
+      environment:
+        PYTHONUSERUSERBASE: "{{ dot_local }}"
+
+      # TODO: Move to "normal" dotfile once bin handling is set
+    - name: Mask pip and pip3
+      ansible.builtin.copy:
+        dest: "{{ pipx_bin }}/{{ item }}"
+        src: "files/mask_pip"
+        mode: 0755
+      loop:
+        - pip
+        - pip3
+
+    - name: Install python packages
+      community.general.pipx:
+        executable: "{{ pipx_bin }}/pipx"
+        name: "{{ item }}"
+        state: install
+        install_deps: true
+        python: "{{ pipx_python }}"
+      environment:
+        PIPX_HOME: "{{ pipx_home }}"
+        PIPX_BIN: "{{ pipx_bin }}"
+        PIPX_MAN: "{{ dot_local }}/share/man"
+      loop: "{{ python_packages }}"
+
+    - name: Upgrade pipx packages
+      community.general.pipx:
+        executable: "{{ pipx_bin }}/pipx"
+        state: upgrade_all
+        include_injected: true
+        python: "{{ pipx_python }}"
+      environment:
+        PIPX_HOME: "{{ pipx_home }}"
+        PIPX_BIN: "{{ pipx_bin }}"
+        PIPX_MAN: "{{ dot_local }}/share/man"
+
+
+- name: Build local packages
+  vars:
+    stow_dir: "{{ dot_local }}/stow"
+
+  block:
+    - name: Install build files
+      ansible.builtin.copy:
+        dest: "{{ stow_dir }}/"
+        src: "files/stow/"
+        mode: preserve
+
+    - name: Clean older packages
+      ansible.builtin.shell:
+        chdir: "{{ stow_dir }}"
+        cmd: "./Clean.sh"
+      register: clean_out
+      changed_when: clean_out.stdout != ""
+      failed_when: clean_out.rc != 0
+
+    - name: Build packages
+      community.general.make:
+        chdir: "{{ stow_dir }}"
+
+    - name: Stow the packages
+      ansible.builtin.shell:
+        chdir: "{{ stow_dir }}"
+        cmd: "./stow*/bin/stow -R [a-z]*"
+      changed_when: false
+
+    - name: Copy terminfo for ghostty
+      ansible.builtin.copy:
+        dest: "{{ home }}/.terminfo/"
+        src: "files/terminfo/"
+
+
+- name: Download latest starship from GitHub
+  ansible.builtin.unarchive:
+    src: "{{
+      (lookup('url',
+              'https://api.github.com/repos/starship/starship/releases/latest',
+              split_lines = false) | from_json
+      ).get('assets')[-2].get('browser_download_url')
+    }}"
+    dest: "{{ dot_local }}/bin"
+    remote_src: true
