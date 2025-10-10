@@ -28,7 +28,7 @@
 
     - name: Include shared home directory specfic variables
       ansible.builtin.include_vars:
-        file: shared-home.yml
+        file: shared-home.yaml
       when:
         - home_fs.stdout == "nfs"
 
