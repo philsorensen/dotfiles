@@ -18,5 +18,6 @@ os-setup:
 stow:
 	stow -v bash starship tmux
 	source $(HOME)/.config/bash/environment
-	[[ $(DISTRO) == el* ]] && stow -v classe
-
+	case "$(DISTRO)" in \
+	    el*) stow -v classe ;; \
+	esac
